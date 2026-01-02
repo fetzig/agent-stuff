@@ -4,7 +4,7 @@
  * Alternative to qna.ts with a custom interactive TUI for answering questions.
  *
  * Demonstrates the "prompt generator" pattern with custom TUI:
- * 1. /ask command gets the last assistant message
+ * 1. /answer command gets the last assistant message
  * 2. Shows a spinner while extracting questions as structured JSON
  * 3. Presents an interactive TUI to navigate and answer questions
  * 4. Submits the compiled answers when done
@@ -415,11 +415,11 @@ class QnAComponent implements Component {
 }
 
 export default function (pi: HookAPI) {
-	pi.registerCommand("ask", {
+	pi.registerCommand("answer", {
 		description: "Extract questions from last assistant message into interactive Q&A",
 		handler: async (_args, ctx) => {
 			if (!ctx.hasUI) {
-				ctx.ui.notify("ask requires interactive mode", "error");
+				ctx.ui.notify("answer requires interactive mode", "error");
 				return;
 			}
 
@@ -521,7 +521,7 @@ export default function (pi: HookAPI) {
 			// Send the answers directly as a message and trigger a turn
 			pi.sendMessage(
 				{
-					customType: "ask-answers",
+					customType: "answers",
 					content: answersResult,
 					display: true,
 				},
