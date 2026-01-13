@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fetch and parse pi-share (shittycodingagent.ai) session exports.
+ * Fetch and parse pi-share (shittycodingagent.ai/buildwithpi.ai/buildwithpi.com) session exports.
  * 
  * Usage:
  *   node fetch-session.mjs <url-or-gist-id> [--header] [--entries] [--system] [--tools] [--human-summary] [--no-cache]
@@ -52,8 +52,12 @@ function writeCache(gistId, data) {
 // Extract gist ID from URL or use directly
 function extractGistId(input) {
   // Handle full URLs like https://shittycodingagent.ai/session/?<id>
-  const urlMatch = input.match(/[?&]([a-f0-9]{32})/i);
-  if (urlMatch) return urlMatch[1];
+  const queryMatch = input.match(/[?&]([a-f0-9]{32})/i);
+  if (queryMatch) return queryMatch[1];
+
+  // Handle path-based URLs like https://buildwithpi.ai/session/<id>
+  const pathMatch = input.match(/\/session\/?([a-f0-9]{32})/i);
+  if (pathMatch) return pathMatch[1];
   
   // Handle direct gist ID
   if (/^[a-f0-9]{32}$/i.test(input)) return input;

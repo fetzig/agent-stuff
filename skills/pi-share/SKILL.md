@@ -1,16 +1,18 @@
 ---
 name: pi-share
-description: "Load and parse session transcripts from shittycodingagent.ai (pi-share) URLs. Fetches gists, decodes embedded session data, and extracts conversation history."
+description: "Load and parse session transcripts from shittycodingagent.ai/buildwithpi.ai/buildwithpi.com (pi-share) URLs. Fetches gists, decodes embedded session data, and extracts conversation history."
 ---
 
-# pi-share / shittycodingagent.ai Session Loader
+# pi-share / buildwithpi Session Loader
 
-Load and parse session transcripts from shittycodingagent.ai (pi-share) URLs.
+Load and parse session transcripts from pi-share URLs (shittycodingagent.ai, buildwithpi.ai, buildwithpi.com).
 
 ## When to Use
 
 **Loading sessions:** Use this skill when the user provides a URL like:
 - `https://shittycodingagent.ai/session/?<gist_id>`
+- `https://buildwithpi.ai/session/?<gist_id>`
+- `https://buildwithpi.com/session/?<gist_id>`
 - Or just a gist ID like `46aee35206aefe99257bc5d5e60c6121`
 
 **Human summaries:** Use `--human-summary` when the user asks you to:
