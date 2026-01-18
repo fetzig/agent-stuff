@@ -59,20 +59,9 @@ Interactive element picker. Click to select, Cmd/Ctrl+Click for multi-select, En
 ./scripts/dismiss-cookies.js --reject # Reject cookies (where possible)
 \`\`\`
 
-Automatically dismisses EU cookie consent dialogs. Supports:
-- **OneTrust** (booking.com, ikea.com, many others)
-- **Google** consent dialogs
-- **Cookiebot**
-- **Didomi**
-- **Quantcast Choice**
-- **Usercentrics** (shadow DOM)
-- **Sourcepoint** (BBC, etc. - works with iframes)
-- **Amazon**
-- **TrustArc**
-- **Klaro**
-- Generic cookie banners with common button text patterns
+Automatically dismisses EU cookie consent dialogs.
 
-Run after navigating to a page (with a short delay for dialogs to load):
+Run after navigating to a page:
 \`\`\`bash
-./scripts/nav.js https://example.com && sleep 2 && ./scripts/dismiss-cookies.js
+./scripts/nav.js https://example.com && ./scripts/dismiss-cookies.js
 \`\`\`
