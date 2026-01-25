@@ -146,6 +146,7 @@ class TodoSelectorComponent extends Container implements Focusable {
 		onSelect: (todo: TodoFrontMatter) => void,
 		onCancel: () => void,
 		initialSearchInput?: string,
+		private onQuickAction?: (todo: TodoFrontMatter, action: "work" | "refine") => void,
 	) {
 		super();
 		this.tui = tui;
@@ -207,7 +208,10 @@ class TodoSelectorComponent extends Container implements Focusable {
 
 	private updateHints(): void {
 		this.hintText.setText(
-			this.theme.fg("dim", "Type to search • ↑↓ select • Enter view • Esc close"),
+			this.theme.fg(
+				"dim",
+				"Type to search • ↑↓ select • Enter view • Ctrl+Shift+R refine • Ctrl+Shift+W work • Esc close",
+			),
 		);
 	}
 
@@ -284,6 +288,16 @@ class TodoSelectorComponent extends Container implements Focusable {
 			this.onCancelCallback();
 			return;
 		}
+		if (matchesKey(keyData, Key.ctrlShift("r"))) {
+			const selected = this.filteredTodos[this.selectedIndex];
+			if (selected && this.onQuickAction) this.onQuickAction(selected, "refine");
+			return;
+		}
+		if (matchesKey(keyData, Key.ctrlShift("w"))) {
+			const selected = this.filteredTodos[this.selectedIndex];
+			if (selected && this.onQuickAction) this.onQuickAction(selected, "work");
+			return;
+		}
 
 		this.searchInput.handleInput(keyData);
 		this.applyFilter(this.searchInput.getValue());
@@ -342,7 +356,7 @@ class TodoDetailOverlayComponent {
 			this.scrollBy(this.viewHeight || 1);
 			return;
 		}
-		if (matchesKey(keyData, Key.alt("r"))) {
+		if (keyData === "r" || keyData === "R") {
 			this.onAction("refine");
 			return;
 		}
@@ -354,7 +368,7 @@ class TodoDetailOverlayComponent {
 			this.onAction("reopen");
 			return;
 		}
-		if (matchesKey(keyData, Key.alt("w"))) {
+		if (keyData === "w" || keyData === "W") {
 			this.onAction("work");
 			return;
 		}
@@ -446,8 +460,8 @@ class TodoDetailOverlayComponent {
 
 	private buildActionLine(width: number): string {
 		const closed = isTodoClosed(this.todo.status);
-		const refine = this.theme.fg("accent", "alt+r") + this.theme.fg("muted", " refine task");
-		const work = this.theme.fg("accent", "alt+w") + this.theme.fg("muted", " work on todo");
+		const refine = this.theme.fg("accent", "r") + this.theme.fg("muted", " refine task");
+		const work = this.theme.fg("accent", "w") + this.theme.fg("muted", " work on todo");
 		const close = this.theme.fg(closed ? "dim" : "accent", "c") +
 			this.theme.fg(closed ? "dim" : "muted", " close task");
 		const reopen = this.theme.fg(closed ? "accent" : "dim", "o") +
@@ -1319,6 +1333,14 @@ export default function todosExtension(pi: ExtensionAPI) {
 					},
 					() => done(),
 					searchTerm || undefined,
+					(todo, action) => {
+						const title = todo.title || "(untitled)";
+						nextPrompt =
+							action === "refine"
+								? `let's refine task #${todo.id} "${title}": `
+								: `work on todo #${todo.id} "${title}"`;
+						done();
+					},
 				);
 
 				return selector;
